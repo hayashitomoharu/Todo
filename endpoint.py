@@ -53,7 +53,7 @@ app = FastAPI()
 # sqlomodelを作成？
 @app.on_event("startup")
 def on_startup():
-    create_db_and_tables()
+    create_db_or_connect()
 
 # Taskモデルにレコードが存在するかチェックしてなければ指定したstatus_codeでエラーをraiseする関数
 def get_task_or_exception(task_id: int, session: Session, status_code = status.HTTP_404_NOT_FOUND, ):
