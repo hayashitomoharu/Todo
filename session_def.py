@@ -1,14 +1,15 @@
-from sqlmodel import  SQLModel, create_engine, Session
+from sqlmodel import SQLModel, create_engine, Session
 
-DATABASE_URL = 'sqlite:///./sample.db'
+DATABASE_URL = "sqlite:///./sample.db"
 
 # sqlをコマンドラインにechoする設定
 connect_args = {"check_same_thread": False}
 engine = create_engine(DATABASE_URL, echo=True, connect_args=connect_args)
 
 
-def create_db_or_connect(): # モデルからテーブルを生成
+def create_db_or_connect():  # モデルからテーブルを生成
     SQLModel.metadata.create_all(engine)
+
 
 # sessionをDependsによって作成する関数
 def get_session():
