@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi import FastAPI, Depends, HTTPException, Query, status
 from sqlmodel import Session, select
 from models.model_and_session import *
 from typing import List
@@ -13,7 +13,7 @@ def on_startup():
     create_db_and_tables()
 
 # Taskモデルにレコードが存在するかチェックしてなければ指定したstatus_codeでエラーをraiseする関数
-def get_task_or_exception(task_id: int, status_code, session: Session):
+def get_task_or_exception(task_id: int, session: Session, status_code = status.HTTP_404_NOT_FOUND, ):
     task_by_id = session.get(Task, task_id)
     if not task_by_id:
         raise HTTPException(status_code=status_code, detail=f"Task with id : {task_id} not found")
@@ -37,7 +37,7 @@ def show(task_id: int, session:Session = Depends(get_session)):
     """指定したidのタスクを返す"""
 
     # DBから取得したいレコードをtask_by_idに取り出す
-    task_by_id = get_task_or_exception(task_id=task_id,status_code=404, session=session)
+    task_by_id = get_task_or_exception(task_id=task_id,session=session)
 
     return task_by_id
 
@@ -59,7 +59,7 @@ def update(task_id: int ,puted_task: TaskUpdate, session:Session = Depends(get_s
     """既存のtaskレコードを任意の内容で更新する"""
 
     # DBから更新したいレコードをtask_by_idに取り出す
-    task_by_id = get_task_or_exception(task_id=task_id, status_code=404, session=session)
+    task_by_id = get_task_or_exception(task_id=task_id, session=session)
 
     # putで送られているデータからNoneを排除するが、nullやNoneがクライアントから明示的に送られている場合は辞書に加えて削除できる
     puted_task_data = puted_task.dict(exclude_unset= True)
@@ -80,7 +80,7 @@ def update(task_id: int ,puted_task: TaskUpdate, session:Session = Depends(get_s
 def destroy(task_id: int, session:Session = Depends(get_session)):
     """特定のレコードを削除する"""
     # DBから削除したいレコードをtask_by_idに取り出す
-    task_by_id = get_task_or_exception(task_id=task_id, status_code=404, session=session)
+    task_by_id = get_task_or_exception(task_id=task_id, session=session)
 
     session.delete(task_by_id)
     session.commit()
