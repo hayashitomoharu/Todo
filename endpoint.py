@@ -30,7 +30,7 @@ class Task(TaskBase, table=True):
         default_factory=lambda: datetime.now(pytz.timezone("Asia/Tokyo")),
         nullable=False,
     )
-    __tablename__ = "tasks"
+    __tablename__ :str = "tasks"
 
 
 class TaskCreate(TaskBase):
