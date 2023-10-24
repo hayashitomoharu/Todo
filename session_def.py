@@ -1,6 +1,9 @@
 from sqlmodel import SQLModel, create_engine, Session
-
-DATABASE_URL = "sqlite:///./sample.db"
+from dotenv import load_dotenv
+import os
+# DBの環境変数を読み込む
+load_dotenv()
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 # sqlをコマンドラインにechoする設定
 connect_args = {"check_same_thread": False}
